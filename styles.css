@@ -7,15 +7,25 @@
   --brand-soft: #eef7fc;
   --navy: #0b3b5c;
   --teal: #0dafa6;
-  --sky: #56d5d8;
-  --violet: #8b5cf6;
   --amber: #f59e42;
-  --green: #22c55e;
 
   --ink: #16233a;
   --ink-soft: #5b6b7c;
   --canvas: #fafcfd;
   --line: #eaeef2;
+
+  /* Spacing scale. Everything below picks from this rather than inventing a
+     value, so vertical rhythm stays consistent when sections move around. */
+  --space-2xs: 0.5rem;
+  --space-xs:  0.75rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2rem;
+  --space-xl:  3rem;
+
+  /* Icon sizing, one place. */
+  --icon-sm: 18px;
+  --tap-min: 44px;
 
   --radius: 18px;
   --maxw: 1120px;
@@ -35,7 +45,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 { margin: 0; font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; }
+h1, h2, h3 {
+  margin: 0; font-weight: 800; letter-spacing: -0.025em; line-height: 1.15;
+  /* Stops a short trailing word being orphaned onto its own line. */
+  text-wrap: balance;
+}
 p { margin: 0; }
 ul { list-style: none; margin: 0; padding: 0; }
 a { color: inherit; text-decoration: none; }
@@ -90,7 +104,14 @@ img, svg { display: block; max-width: 100%; }
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
-.nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; gap: 1rem; }
+/* padding-block, NOT the `1rem 0` shorthand. This element also carries .wrap,
+   which supplies the horizontal padding; a shorthand here has equal specificity
+   and comes later, so it silently zeroed the inline axis and pinned the logo
+   and button to the viewport edges. */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-block: var(--space-sm); gap: var(--space-sm);
+}
 .logo { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 800; font-size: 1.1rem; }
 .mark {
   display: grid; place-items: center; width: 34px; height: 34px;
@@ -129,13 +150,17 @@ img, svg { display: block; max-width: 100%; }
 
 /* --- sections -------------------------------------------------------- */
 section { padding: clamp(3.5rem, 8vw, 6rem) 0; }
+
+/* The header is sticky, so an anchor jump would otherwise put the heading
+   underneath it. Offset by a little more than the header's height. */
+section[id] { scroll-margin-top: 90px; }
 section h2 { font-size: clamp(1.65rem, 1.2rem + 1.6vw, 2.3rem); color: var(--navy); }
 .band { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 
 /* --- pillar cards ---------------------------------------------------- */
 .cards {
-  display: grid; grid-template-columns: repeat(5, 1fr);
-  gap: 1.15rem; margin-top: 3rem;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.15rem; margin-top: var(--space-xl);
 }
 .card {
   position: relative; background: #fff; border: 1px solid var(--line);
@@ -151,9 +176,7 @@ section h2 { font-size: clamp(1.65rem, 1.2rem + 1.6vw, 2.3rem); color: var(--nav
 .ico { display: block; width: 42px; height: 42px; border-radius: 12px; margin-bottom: 1.1rem; }
 .ico-teal   { background: #e3f8f6; box-shadow: inset 0 0 0 2px rgba(13,175,166,0.25); }
 .ico-blue   { background: #e7f2fc; box-shadow: inset 0 0 0 2px rgba(19,135,212,0.25); }
-.ico-violet { background: #f1ecfd; box-shadow: inset 0 0 0 2px rgba(139,92,246,0.22); }
 .ico-amber  { background: #fef1e4; box-shadow: inset 0 0 0 2px rgba(245,158,66,0.24); }
-.ico-green  { background: #e6f7ed; box-shadow: inset 0 0 0 2px rgba(34,197,94,0.22); }
 
 .tag {
   display: inline-block; margin-top: 1rem;
@@ -196,4 +219,92 @@ section h2 { font-size: clamp(1.65rem, 1.2rem + 1.6vw, 2.3rem); color: var(--nav
   html { scroll-behavior: auto; }
   .reveal, .reveal.in { opacity: 1; transform: none; transition: none; }
   .btn:hover, .card:hover { transform: none; }
+}
+
+/* --- shared ----------------------------------------------------------- */
+
+.center-row { justify-content: center; margin-top: 2rem; }
+
+/* Disabled on purpose: the waitlist is not open yet. Styled as clearly
+   inert rather than merely greyed, so nobody clicks it twice wondering. */
+/* 0.65 rather than 0.55: still unmistakably inert, but the label clears 4.5:1
+   instead of sitting at roughly 3.6:1. */
+.btn[disabled] {
+  opacity: 0.65; cursor: not-allowed; box-shadow: none;
+}
+.btn[disabled]:hover { transform: none; border-color: var(--line); color: inherit; }
+.soon {
+  margin-left: 0.5rem; padding: 0.1rem 0.45rem; border-radius: 99px;
+  background: var(--brand-soft); color: var(--brand-deep);
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+/* --- socials ---------------------------------------------------------- */
+/* Grouped by brand rather than one row of six identical icons, so the eye
+   reads three things instead of counting six. */
+.social-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.15rem; margin-top: 3rem;
+}
+.social-group {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+  background: var(--canvas); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.25rem 1.35rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.social-group:hover { border-color: #d8e3ea; transform: translateY(-2px); }
+
+.social-label { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot-blue  { background: var(--brand); }
+.dot-teal  { background: var(--teal); }
+.dot-amber { background: var(--amber); }
+
+.social-name { display: block; font-weight: 700; font-size: 0.95rem; line-height: 1.3; }
+.social-note { display: block; font-size: 0.8rem; color: var(--ink-soft); }
+
+.social-links { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.social-links a {
+  display: grid; place-items: center; width: 40px; height: 40px;
+  border-radius: 10px; border: 1px solid var(--line); background: #fff;
+  color: var(--ink-soft);
+  transition: color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.social-links a:hover { color: var(--brand); border-color: var(--brand); transform: translateY(-2px); }
+.social-links svg { width: var(--icon-sm); height: var(--icon-sm); flex-shrink: 0; }
+
+@media (max-width: 900px) { .social-grid { grid-template-columns: 1fr; } }
+
+/* --- mobile breathing room -------------------------------------------- */
+/* The header sat tight against both edges on a phone: the logo on one side and
+   the button on the other, with the viewport padding doing all the work. */
+@media (max-width: 620px) {
+  .wrap { padding-left: 1.35rem; padding-right: 1.35rem; }
+  .nav { padding: 0.85rem 0; gap: 0.75rem; }
+  .logo { font-size: 1rem; gap: 0.5rem; }
+  .mark { width: 30px; height: 30px; font-size: 0.72rem; border-radius: 9px; }
+  .btn-sm { padding: 0.55rem 0.9rem; font-size: 0.82rem; }
+  .cta-row .btn, .center-row .btn { width: 100%; }
+  .center-row { flex-direction: column; }
+  .btn-lg { padding: 0.9rem 1.5rem; font-size: 0.95rem; }
+  .social-group { padding: 1.1rem; }
+}
+
+/* --- contact ---------------------------------------------------------- */
+/* Sits under the CTA pair, so it needs separation from them rather than the
+   default paragraph gap, which read as though it belonged to the buttons. */
+.contact-alt {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(11, 59, 92, 0.08);
+  max-width: 28rem; margin-inline: auto;
+  font-size: 0.92rem; color: var(--ink-soft);
+}
+.contact-alt a { color: var(--brand-deep); font-weight: 600; }
+.contact-alt a:hover { text-decoration: underline; }
+
+@media (max-width: 620px) {
+  /* Comfortable thumb targets. The glyph stays --icon-sm so nothing reflows. */
+  .social-links a { width: var(--tap-min); height: var(--tap-min); }
 }

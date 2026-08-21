@@ -1,7 +1,8 @@
-// Everything here is progressive enhancement. The page is complete without it.
+// Everything here is progressive enhancement. The page works without it.
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
+/* ---------------------------------------------------------------- reveal */
 const revealables = document.querySelectorAll('.reveal');
 
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

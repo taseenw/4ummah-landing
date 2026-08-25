@@ -187,6 +187,24 @@ section h2 { font-size: clamp(1.65rem, 1.2rem + 1.6vw, 2.3rem); color: var(--nav
 .tag-live { background: var(--brand-soft); color: var(--brand-deep); }
 
 @media (max-width: 1000px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+
+/* Three cards in two columns leaves the last one alone in the left column with
+   a hole beside it. Span the row and centre it at the same width its siblings
+   have, so it reads as deliberate rather than as a layout that ran out.
+
+   Keyed on :last-child:nth-child(odd) rather than on .card:nth-child(3), so it
+   is the parity that triggers it, not the count. Add a fourth card and the rule
+   stops applying by itself; add a fifth and it starts again.
+
+   Bounded below at 561px because under that the grid is a single column, where
+   halving the width would be wrong. */
+@media (max-width: 1000px) and (min-width: 561px) {
+  .cards > .card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: calc(50% - (1.15rem / 2));
+    margin-inline: auto;
+  }
+}
 @media (max-width: 560px)  { .cards { grid-template-columns: 1fr; } }
 
 /* --- who ------------------------------------------------------------- */
